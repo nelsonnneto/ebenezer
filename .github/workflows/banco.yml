@@ -1,0 +1,17 @@
+name: banco
+on: [push, pull_request]
+jobs:
+  migrations-seed-testes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Postgres 16 + pgTAP
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q postgresql-16 postgresql-16-pgtap
+          sudo -u postgres /usr/lib/postgresql/16/bin/pg_ctl -D /tmp/pg -o "-p 5433" -l /tmp/pg.log start || true
+          sudo -u postgres /usr/lib/postgresql/16/bin/initdb -D /tmp/pg -U postgres --auth=trust >/dev/null
+          sudo -u postgres /usr/lib/postgresql/16/bin/pg_ctl -D /tmp/pg -o "-p 5433" -l /tmp/pg.log start
+          sleep 2
+      - name: Migrations, seed e testes
+        run: scripts/db-local.sh localhost 5433 | tee saida.txt; ! grep -qE "^ *not ok" saida.txt
