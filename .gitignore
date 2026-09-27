@@ -7,3 +7,9 @@ supabase/.branches/
 supabase/.temp/
 *.log
 .DS_Store
+web/.next/
+web/next-env.d.ts
+web/test-results/
+web/e2e-relatorio/
+web/tsconfig.tsbuildinfo
+dev/supabase-local/node_modules/

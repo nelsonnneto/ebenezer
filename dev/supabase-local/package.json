@@ -1,0 +1,8 @@
+{
+  "name": "supabase-local-emulador",
+  "private": true,
+  "type": "module",
+  "description": "Emulador mínimo da API do Supabase (REST + Auth + Storage público) para ambientes sem Docker. Uso exclusivo em desenvolvimento e testes.",
+  "scripts": { "start": "node server.mjs" },
+  "dependencies": { "jose": "^5.9.6", "pg": "^8.13.1" }
+}

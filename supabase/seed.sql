@@ -22,7 +22,7 @@ insert into public.marco (codigo, trilha, nome, descricao, meses_requeridos, doa
   ('impacto_continuo',     'doador', 'Impacto Contínuo',        'Três meses consecutivos de apoio.', 3, null, 2),
   ('raizes_fortes',        'doador', 'Raízes Fortes',           'Seis meses consecutivos de apoio.', 6, null, 3),
   ('guardiao_comunidade',  'doador', 'Guardião da Comunidade',  'Doze meses consecutivos de apoio.', 12, null, 4),
-  ('guardiao_educacao',    'doador', 'Guardião da Educação',    'Um ciclo anual completo apoiado, de janeiro a dezembro.', null, null, 5),
+  ('guardiao_educacao',    'doador', 'Guardião da Educação',    'Vinte e quatro meses consecutivos de apoio — um ciclo completo do programa de reforço.', 24, null, 5),
   ('voz_da_causa',         'embaixador', 'Voz da Causa',        'Primeiro compartilhamento com a sua rede.', null, null, 1),
   ('conector',             'embaixador', 'Conector',            'Cinco pessoas da sua rede passaram a doar.', null, 5, 2),
   ('mobilizador',          'embaixador', 'Mobilizador',         'Vinte e cinco pessoas da sua rede passaram a doar.', null, 25, 3),
@@ -178,14 +178,11 @@ end $$;
 select public.fn_avaliar_marcos(id) from public.doador where papel = 'doador';
 select public.fn_avaliar_marcos_embaixador(id) from public.embaixador;
 
--- Compartilhamentos (Renata e Eduardo) e certificado do Eduardo (nº EC-<ano>-000148)
+-- Compartilhamentos (Renata e Eduardo). Certificados nascem sozinhos a cada conquista (trigger).
 insert into public.compartilhamento (doador_id, conteudo, rede, em) values
   ('d0000000-0000-4000-8000-000000000003', 'convite', 'whatsapp', now() - interval '10 months'),
   ('d0000000-0000-4000-8000-000000000003', 'convite', 'linkedin', now() - interval '9 months'),
   ('d0000000-0000-4000-8000-000000000001', 'conquista', 'linkedin', now() - interval '2 months');
-select public.fn_emitir_certificado(q.id)
-from public.conquista q join public.marco m on m.id = q.marco_id
-where q.doador_id = 'd0000000-0000-4000-8000-000000000001' and m.codigo = 'guardiao_comunidade';
 
 -- ------------------------------------------------------------
 -- 5. Metas

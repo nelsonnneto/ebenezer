@@ -72,4 +72,26 @@ erDiagram
 
 ## Continuidade: como os meses são contados
 
-Um mês conta quando tem ao menos uma doação confirmada. Uma **pausa** registrada em `recorrencia_evento` cobre os meses seguintes sem quebrar a sequência — e sem somar. **Cancelamento** ou simples ausência de doação quebram a sequência a partir do mês seguinte. A sequência só está viva se o último mês coberto é o corrente ou o anterior. Guardião da Educação exige um ano-calendário inteiro (jan–dez) com doação em todos os meses.
+Um mês conta quando tem ao menos uma doação confirmada. Uma **pausa** registrada em `recorrencia_evento` cobre os meses seguintes sem quebrar a sequência — e sem somar. **Cancelamento** ou simples ausência de doação quebram a sequência a partir do mês seguinte. A sequência só está viva se o último mês coberto é o corrente ou o anterior.
+
+| Marco | Critério | Fonte |
+|---|---|---|
+| Primeiro Passo | primeira doação confirmada | brainstorm do produto |
+| Impacto Contínuo | 3 meses consecutivos | brainstorm do produto |
+| Raízes Fortes | 6 meses consecutivos | brainstorm do produto |
+| Guardião da Comunidade | 12 meses consecutivos | brainstorm do produto |
+| Guardião da Educação | 24 meses consecutivos — "um ciclo completo do programa de reforço" | telas Minha Jornada e Certificado do Figma |
+
+Cada conquista emite o certificado na mesma transação (`trg_conquista_certificado`), com número sequencial `EC-<ano>-<nnnnnn>` e data de emissão igual à da conquista.
+
+## Pausa com prazo
+
+`fn_pausar_recorrencia(p_meses)` aceita 1, 2 ou 3 meses (ou nenhum prazo) e grava `recorrencia.retomar_em`. O job `fn_processar_cobrancas` retoma automaticamente as pausas vencidas antes de cobrar. Alterar valor ou frequência nunca move a data da próxima cobrança: a mudança vale "a partir da próxima cobrança", como a tela promete.
+
+## Painel de impacto
+
+`fn_painel_impacto(ano | período, programa)` define a semântica de agregação — e o front apenas exibe:
+
+- **crianças atendidas** = valor do mês mais recente da janela (contagem não se soma entre meses);
+- **horas e atividades** = soma dos meses;
+- **frequência média** = média dos meses.

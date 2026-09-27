@@ -10,13 +10,17 @@ O produto converte o doador episódico em recorrente e o mantém: doação em po
 
 ```
 supabase/
-  config.toml            configuração do Supabase CLI (Auth, Storage, seed)
-  migrations/            8 migrations: enums → 4 domínios → funções → views → RLS
+  config.toml            configuração do Supabase CLI (Auth, Storage, bucket de imagens, seed)
+  migrations/            9 migrations: enums → 4 domínios → funções → views → RLS → alinhamento ao Figma
   seed.sql               dados sintéticos, relativos ao mês corrente
-  tests/                 pgTAP: esquema, regras, RLS e RPCs (58 asserções)
-scripts/db-local.sh      recria e testa o banco num Postgres puro (sem Docker)
-docs/                    modelo de dados, decisões técnicas, operação, custos
-web/                     front-end Next.js (bloco 2)
+  storage/midia/         imagens ilustrativas (hoje, espaços reservados — ver abaixo)
+  tests/                 pgTAP: esquema, regras, RLS e RPCs (62 asserções)
+web/                     front-end Next.js 16 + Tailwind 4, fiel ao protótipo em Figma
+  src/app/               telas: acesso, home, doar, recorrência, jornada, certificados, verificar
+  e2e/                   Playwright: US-01, US-02 e US-04 ponta a ponta (8 testes) + evidências
+dev/supabase-local/      emulador da API do Supabase para ambientes sem Docker (ADR-07)
+scripts/db-local.sh      recria e testa o banco num Postgres puro
+docs/                    modelo de dados e decisões técnicas
 ```
 
 ## Rodar o banco
@@ -38,13 +42,42 @@ sudo apt-get install postgresql-16 postgresql-16-pgtap
 scripts/db-local.sh localhost 5433
 ```
 
+## Rodar o app
+
+```bash
+# 1. Backend — escolha um:
+supabase start && supabase db reset          # opção A: Supabase CLI (Docker)
+scripts/db-local.sh && (cd dev/supabase-local && npm ci && npm start)   # opção B: sem Docker
+
+# 2. Front-end
+cd web
+npm ci
+cp .env.example .env.local                   # as chaves locais são as mesmas nas duas opções
+npm run dev                                  # http://localhost:3000
+
+# 3. Testes ponta a ponta (com o passo 1 e o `npm run dev` ativos)
+npx playwright test                          # recria o banco de testes antes de rodar
+```
+
+| Rota | Tela do Figma | User story |
+|---|---|---|
+| `/acesso`, `/recuperar-senha` | Acesso, Recuperar Senha, Recuperação Enviada | pré-condição |
+| `/` | Homepage — Média fidelidade | US-02, US-03 |
+| `/doar`, `/doar/confirmada` | Doação, Doação Confirmada | US-01 |
+| `/recorrencia` | Gerenciar Recorrência | US-02 |
+| `/jornada` | Minha Jornada | US-04 |
+| `/certificados`, `/verificar` | Certificado | US-04 |
+| `/atividades`, `/mobilizar`, `/compartilhar` | Atividades, Mobilizar, Compartilhar | Bloco 3 |
+
+**Imagens.** Os seis arquivos em `supabase/storage/midia/` são espaços reservados gerados automaticamente. Substitua-os pelas fotos ilustrativas do protótipo, **mantendo os nomes**: `01-dia-de-arte.jpg`, `02-reforco-escolar.jpg`, `03-primeira-infancia.jpg`, `04-tecnologia.jpg`, `05-roda-de-conversa.jpg`, `06-patio-grupo.jpg`.
+
 ## Usuários de demonstração
 
 Todos com senha `Ebenezer2026!`. Nenhum corresponde a pessoa real.
 
 | E-mail | Perfil | Estado |
 |---|---|---|
-| `eduardo@exemplo.com.br` | doador recorrente — usuário da demo | 14 meses consecutivos, 4 marcos, certificado EC-2026-000148 |
+| `eduardo@exemplo.com.br` | doador recorrente — usuário da demo | R$ 120/mês, 14 meses consecutivos, 4 marcos e 4 certificados (EC-2026-000148 = Guardião da Comunidade), 10 meses para o Guardião da Educação |
 | `rafael@exemplo.com.br` | doador pontual | 1 Pix há 5 meses; Primeiro Passo |
 | `renata@exemplo.com.br` | embaixadora (`/r/renata-c`) | 67 acessos, 12 doadores mobilizados, 7 recorrentes |
 | `coordenacao@exemplo.com.br` | coordenação | lê tudo, publica e atualiza indicadores |

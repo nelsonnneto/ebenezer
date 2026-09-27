@@ -6,7 +6,7 @@ HOST="${1:-localhost}"; PORT="${2:-5433}"; DB="ebenezer_test"
 PSQL="psql -v ON_ERROR_STOP=1 -h $HOST -p $PORT -U postgres -q"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
-psql -h "$HOST" -p "$PORT" -U postgres -q -c "drop database if exists $DB" -c "create database $DB"
+psql -h "$HOST" -p "$PORT" -U postgres -q -c "drop database if exists $DB with (force)" -c "create database $DB"
 $PSQL -d $DB -f "$ROOT/supabase/tests/_shim_auth_local.sql"
 for f in "$ROOT"/supabase/migrations/*.sql; do
   echo "→ $(basename "$f")"; $PSQL -d $DB -f "$f"

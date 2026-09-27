@@ -1,5 +1,5 @@
 begin;
-select plan(19);
+select plan(21);
 
 -- ---------- anon ----------
 set local role anon;
@@ -30,6 +30,8 @@ select is((select frequencia from public.fn_alterar_recorrencia(12000, 'quinzena
 select is((select status from public.fn_pausar_recorrencia()), 'pausada', 'pausa sem justificativa');
 select is((select count(*) from recorrencia_evento), 3::bigint, 'criada, alterada, pausada — cada ação vira evento');
 select is((select count(*) from v_conquistas where codigo = 'primeiro_passo'), 1::bigint, 'Primeiro Passo mantido');
+select is((select status from public.fn_retomar_recorrencia()), 'ativa', 'retoma quando quiser');
+select is((select retomar_em from public.fn_pausar_recorrencia(2)), (current_date + interval '2 months')::date, 'pausa de 2 meses agenda a retomada');
 
 select * from finish();
 rollback;

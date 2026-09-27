@@ -1,0 +1,69 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   Tokens do design system — modo "Marca" do arquivo Figma (coleção Wireframe Tokens).
+   Fonte: variáveis do nó 15:114. Não altere aqui sem alterar no Figma.
+   ========================================================================== */
+@theme {
+  --color-page: #edf2f1;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f6faf9;
+  --color-fill-1: #effaf7;
+  --color-fill-2: #b3e6da;
+  --color-fill-3: #009e89;
+  --color-fill-4: #006255;
+  --color-border: #7e8986;
+  --color-border-soft: #c9d2cf;
+  --color-ink: #161b19;
+  --color-ink-2: #424b49;
+  --color-ink-3: #5f6966;
+  --color-action: #007e6d;
+  --color-on-action: #ffffff;
+  --color-accent: #009e89;
+  --color-selected: #daf3ed;
+  --color-skeleton: #dfe6e4;
+  --color-track: #edf2f1;
+  --color-chart-1: #008268;
+  --color-chart-1-emphasis: #006255;
+  --color-chart-2: #005b99;
+  --color-chart-3: #885700;
+  --color-chart-4: #b15299;
+
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-serif: "IBM Plex Serif", ui-serif, Georgia, "Times New Roman", serif;
+}
+
+/* Estilos de texto do Figma, um utilitário por estilo */
+@utility text-display   { font-size: 40px; line-height: 46px; font-weight: 800; letter-spacing: -0.6px; }
+@utility text-secao     { font-size: 25px; line-height: 31px; font-weight: 700; letter-spacing: -0.2px; }
+@utility text-card      { font-size: 20px; line-height: 26px; font-weight: 600; }
+@utility text-sub       { font-size: 16px; line-height: 22px; font-weight: 600; }
+@utility text-metrica-g { font-size: 39px; line-height: 44px; font-weight: 800; letter-spacing: -0.6px; }
+@utility text-metrica   { font-size: 28px; line-height: 32px; font-weight: 800; letter-spacing: -0.4px; }
+@utility text-caps      { font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: 0.9px; text-transform: uppercase; }
+@utility text-corpo     { font-size: 16px; line-height: 24px; font-weight: 400; }
+@utility text-pequeno   { font-size: 14px; line-height: 20px; font-weight: 400; }
+@utility text-legenda   { font-size: 12px; line-height: 17px; font-weight: 400; }
+@utility text-botao     { font-size: 14px; line-height: 18px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
+
+@layer base {
+  html { color-scheme: light; }
+  body { background: var(--color-page); color: var(--color-ink); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+  :focus-visible { outline: 2px solid var(--color-action); outline-offset: 2px; }
+}
+
+/* Slider de valor (Gerenciar Recorrência) */
+.slider-valor { -webkit-appearance: none; appearance: none; width: 100%; height: 6px; border-radius: 999px; background: linear-gradient(to right, var(--color-action) var(--pct, 0%), var(--color-track) var(--pct, 0%)); cursor: pointer; }
+.slider-valor::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; border-radius: 999px; background: var(--color-surface); border: 3px solid var(--color-action); }
+.slider-valor::-moz-range-thumb { width: 18px; height: 18px; border-radius: 999px; background: var(--color-surface); border: 3px solid var(--color-action); }
+
+/* Impressão do certificado: só o documento, em paisagem */
+@media print {
+  @page { size: A4 landscape; margin: 10mm; }
+  body { background: #fff; }
+  header, footer { display: none !important; }
+}

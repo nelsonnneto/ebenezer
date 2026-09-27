@@ -42,6 +42,8 @@ Cada decisão em meia página: contexto, decisão, consequências. Numeradas na 
 
 **Consequências.** Um doador de R$ 25 e um de R$ 500 percorrem a mesma trilha. Ranking por valor é impossível por ausência de dado exposto, não por escolha de tela.
 
+**Revisão (Bloco 2).** Guardião da Educação passou de "ano-calendário completo" para 24 meses consecutivos, alinhado às telas Minha Jornada e Certificado do protótipo. A regra especial saiu do código: os cinco marcos da trilha do doador seguem o mesmo critério de continuidade.
+
 ## ADR-06 · Rastreio de origem por link próprio, sem tracker de terceiros
 
 **Contexto.** Embaixadores precisam ver conversão; perfis institucionais precisam de link rastreável (achado da validação da Semana 5); LGPD limita coleta.
@@ -49,3 +51,19 @@ Cada decisão em meia página: contexto, decisão, consequências. Numeradas na 
 **Decisão.** `/r/<slug>?c=<canal>` cria uma `origem` anônima (embaixador + canal + data); no primeiro login ela é vinculada ao doador. Sem cookies de terceiros, sem fingerprint, sem IP armazenado.
 
 **Consequências.** O embaixador vê só agregados (`v_rede_embaixador`); a coordenação vê a origem de cada doação; o doador pode ser anonimizado sem perder o dado fiscal.
+
+## ADR-07 · Emulador local da API do Supabase para ambientes sem Docker
+
+**Contexto.** O ambiente de desenvolvimento usado na construção do MVP não tem Docker nem acesso aos binários do PostgREST e do GoTrue; sem eles, o front não pode ser verificado ponta a ponta.
+
+**Decisão.** `dev/supabase-local/server.mjs` implementa só o subconjunto da API que o app usa — leitura de views com filtros simples, RPC com argumentos nomeados, login por senha, `/user`, logout, recuperação e o Storage público — executando cada requisição numa transação com `set local role` e `request.jwt.claims`. As chaves são as mesmas do Supabase CLI local, então o `.env` não muda entre os dois.
+
+**Consequências.** A RLS, as funções e as views são exercitadas de verdade: o emulador troca o servidor HTTP, não o banco. É ferramenta de desenvolvimento e de CI; não é implantável. O caminho padrão continua sendo `supabase start`. O app escreve no banco **só por RPC**, o que mantém o emulador pequeno e o contrato do front estreito.
+
+## ADR-08 · Front-end sem estado próprio de negócio
+
+**Contexto.** ADR-01 exige que o front possa ser trocado por uma ferramenta no-code sem perda.
+
+**Decisão.** Next.js 16 com Server Components para leitura e Server Actions para escrita; cada ação chama exatamente uma RPC e só traduz o erro para o doador. O único conteúdo mantido no front são os três planos sugeridos da tela de Doação (nomes e textos editoriais) e as paradas do seletor de valor — o banco aceita qualquer valor entre R$ 25 e R$ 500.
+
+**Consequências.** Nenhuma regra de marco, continuidade, agregação ou privacidade existe em TypeScript. Os testes de regra ficam no pgTAP; os testes do app verificam apenas o percurso das user stories.

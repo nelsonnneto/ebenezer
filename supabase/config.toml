@@ -42,3 +42,11 @@ secret = "env(GOOGLE_CLIENT_SECRET)"
 [storage]
 enabled = true
 file_size_limit = "10MiB"
+
+# Bucket público de imagens ilustrativas. Os arquivos em ./storage/midia são enviados no `supabase start`.
+# Os .jpg versionados são ESPAÇOS RESERVADOS: substitua pelas seis fotos ilustrativas mantendo os nomes.
+[storage.buckets.midia]
+public = true
+file_size_limit = "5MiB"
+allowed_mime_types = ["image/jpeg", "image/png", "image/webp"]
+objects_path = "./storage/midia"

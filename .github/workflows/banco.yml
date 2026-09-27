@@ -1,7 +1,8 @@
-name: banco
+name: testes
 on: [push, pull_request]
 jobs:
-  migrations-seed-testes:
+  banco:
+    name: banco — migrations, seed e pgTAP
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -9,9 +10,43 @@ jobs:
         run: |
           sudo apt-get update -q
           sudo apt-get install -y -q postgresql-16 postgresql-16-pgtap
-          sudo -u postgres /usr/lib/postgresql/16/bin/pg_ctl -D /tmp/pg -o "-p 5433" -l /tmp/pg.log start || true
           sudo -u postgres /usr/lib/postgresql/16/bin/initdb -D /tmp/pg -U postgres --auth=trust >/dev/null
           sudo -u postgres /usr/lib/postgresql/16/bin/pg_ctl -D /tmp/pg -o "-p 5433" -l /tmp/pg.log start
           sleep 2
       - name: Migrations, seed e testes
         run: scripts/db-local.sh localhost 5433 | tee saida.txt; ! grep -qE "^ *not ok" saida.txt
+
+  app:
+    name: app — build e testes ponta a ponta
+    runs-on: ubuntu-latest
+    needs: banco
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Postgres 16 + pgTAP
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q postgresql-16 postgresql-16-pgtap
+          sudo -u postgres /usr/lib/postgresql/16/bin/initdb -D /tmp/pg -U postgres --auth=trust >/dev/null
+          sudo -u postgres /usr/lib/postgresql/16/bin/pg_ctl -D /tmp/pg -o "-p 5433" -l /tmp/pg.log start
+          sleep 2
+          scripts/db-local.sh localhost 5433 > /dev/null
+      - name: Emulador do Supabase
+        run: cd dev/supabase-local && npm ci && (node server.mjs > /tmp/emu.log 2>&1 &) && sleep 2
+      - name: Dependências e build
+        run: cd web && npm ci && cp .env.example .env.local && npm run build
+      - name: Testes ponta a ponta
+        run: |
+          cd web
+          npx playwright install --with-deps chromium
+          (npx next start -p 3000 > /tmp/next.log 2>&1 &)
+          for i in $(seq 1 60); do curl -sf http://localhost:3000/acesso > /dev/null && break; sleep 1; done
+          npx playwright test
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: evidencias-e2e
+          path: |
+            web/e2e/evidencias
+            web/e2e-relatorio
