@@ -1,6 +1,13 @@
 -- ------------------------------------------------------------
 -- Epílogo exclusivo do Supabase hospedado (não roda no banco local)
+-- ATENÇÃO: este arquivo NÃO é executado sozinho. Ele é anexado ao final de
+-- dist/ebenezer-supabase-hospedado.sql por scripts/gerar-sql-hospedado.sh.
 -- ------------------------------------------------------------
+do $$ begin
+  if to_regclass('public.doador') is null then
+    raise exception 'Arquivo errado: execute dist/ebenezer-supabase-hospedado.sql (script único), não o epílogo isolado.';
+  end if;
+end $$;
 
 -- 1. Auth: o GoTrue hospedado não aceita colunas de token nulas nos usuários criados por SQL.
 do $$
