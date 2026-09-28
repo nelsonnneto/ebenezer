@@ -169,7 +169,10 @@ export async function painelRede() {
     rede: rede.data as RedeEmbaixador | null,
     canais: (canais.data ?? []) as OrigemCanal[],
     meses: (meses.data ?? []) as RedeMes[],
-    materiais: (materiais.data ?? []) as Material[],
+    // O banco grava o domínio definitivo; na demonstração o link aponta para o endereço em uso.
+    materiais: ((materiais.data ?? []) as Material[]).map((m) => ({
+      ...m, texto_pronto: m.texto_pronto?.replaceAll('ebenezerconecta.org.br/r/', `${SITE.replace(/^https?:\/\//, '')}/r/`) ?? m.texto_pronto,
+    })),
     meta: metas.data as MetaProgresso | null,
   };
 }

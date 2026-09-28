@@ -13,3 +13,4 @@ web/test-results/
 web/e2e-relatorio/
 web/tsconfig.tsbuildinfo
 dev/supabase-local/node_modules/
+dist/

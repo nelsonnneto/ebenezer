@@ -73,6 +73,10 @@ npx playwright test                          # recria o banco de testes antes de
 
 **Imagens.** Os seis arquivos em `supabase/storage/midia/` são as fotos ilustrativas do protótipo (1168 × 784). Não retratam crianças atendidas pelo Instituto; toda tela que as exibe traz essa indicação. Para trocar uma imagem, mantenha o nome do arquivo: `01-dia-de-arte.jpg`, `02-reforco-escolar.jpg`, `03-primeira-infancia.jpg`, `04-tecnologia.jpg`, `05-roda-de-conversa.jpg`, `06-patio-grupo.jpg`.
 
+## Versão de demonstração (hospedada)
+
+Supabase hospedado + Vercel. Passo a passo, variáveis e conferência em [`docs/implantacao.md`](docs/implantacao.md).
+
 ## Usuários de demonstração
 
 Todos com senha `Ebenezer2026!`. Nenhum corresponde a pessoa real.
