@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { Logo } from '@/components/shell/Logo';
 import { PainelInstitucional } from '../PainelInstitucional';
 import { FormEntrar } from './FormEntrar';
@@ -17,7 +18,7 @@ export default async function Acesso({ searchParams }: { searchParams: Promise<{
           <p className="text-corpo mt-3 text-ink-2">Acompanhe o impacto dos programas, sua jornada de apoio e seus certificados.</p>
           <FormEntrar volta={volta} />
           <div className="mt-8 border-t border-border-soft pt-6 text-center">
-            <p className="text-pequeno text-ink-2">Ainda não apoia o Instituto?&nbsp;&nbsp;<span className="text-ink">Conhecer os programas&nbsp;&nbsp;→</span></p>
+            <p className="text-pequeno text-ink-2">Ainda não apoia o Instituto?&nbsp;&nbsp;<Link href="/conheca" className="text-ink underline-offset-4 hover:underline">Conhecer os programas&nbsp;&nbsp;→</Link></p>
             <p className="text-legenda mt-3 text-ink-3">Ao entrar, você concorda com a Política de Privacidade. Seus dados são tratados conforme a LGPD e nunca são compartilhados com terceiros.</p>
           </div>
         </div>

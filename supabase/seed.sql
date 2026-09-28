@@ -15,7 +15,7 @@ insert into public.programa (codigo, nome, faixa_etaria, cadencia, descricao, or
   ('lab_sonhos',        'Laboratório de Sonhos', '7 a 11 anos', 'sábados',           'Parte da aspiração profissional da criança e a conecta a profissionais e espaços que ampliem seu repertório.', 1),
   ('reforco',           'Reforço Escolar',       '7 a 11 anos', 'segunda a sexta',   'Inglês, português, matemática e projeto de vida, em dois turnos de vinte crianças.', 2),
   ('primeira_infancia', 'Primeira Infância',     '3 a 5 anos',  'segunda a sexta',   'Familiarização com o ambiente e a rotina do Instituto antes dos programas de 7 a 11 anos.', 3),
-  ('vivencia',          'Vivência Terapêutica',  '7 a 11 anos', 'sábados de manhã',  'Conduzida pela psicóloga. Conteúdo clínico: sem indicador nem publicação nas telas do doador (bloco 6).', 4);
+  ('vivencia',          'Vivência Terapêutica',  '7 a 11 anos', 'sábados de manhã',  'Encontros em grupo conduzidos pela psicóloga do Instituto. Por ser um acompanhamento clínico, não gera indicadores nem publicações.', 4);
 
 insert into public.marco (codigo, trilha, nome, descricao, meses_requeridos, doadores_requeridos, ordem) values
   ('primeiro_passo',       'doador', 'Primeiro Passo',          'Sua primeira contribuição ao Instituto.', 1, null, 1),
@@ -38,12 +38,12 @@ insert into public.imagem (id, url_storage, descricao_alt, ilustrativa) values
   ('a0000000-0000-4000-8000-000000000006', 'midia/06-patio-grupo.jpg',       'Grupo de crianças e educadores em pátio ao ar livre.', true);
 
 insert into public.material_campanha (titulo, descricao, tipo, imagem_id, url_storage, texto_pronto, ordem) values
-  ('Cards para redes sociais', '3 formatos · feed, stories e capa', 'card', 'a0000000-0000-4000-8000-000000000004', 'materiais/cards-redes-sociais.zip', null, 1),
+  ('Cards para redes sociais', '3 formatos · feed, stories e capa', 'card', 'a0000000-0000-4000-8000-000000000004', 'midia/04-tecnologia.jpg', null, 1),
   ('Texto para WhatsApp', 'mensagem curta com o link', 'texto', null, null,
    'Oi! Faço parte da comunidade que sustenta o Instituto Social Ebenézer, no Jardim Ângela. Eles acompanham 120 crianças em quatro programas e mostram o resultado todo mês. Se quiser conhecer: {{link}}', 2),
   ('Post para LinkedIn', 'texto longo + arte institucional', 'post', 'a0000000-0000-4000-8000-000000000004', null,
    'Há alguns meses apoio o Instituto Social Ebenézer, que atende crianças de 3 a 11 anos no Jardim Ângela, em São Paulo. O que me convenceu não foi a emoção — foi a transparência: indicadores agregados por programa, publicados todo mês, e nenhuma criança exposta. Se você procura uma causa que presta contas, conheça: {{link}}', 3),
-  ('Assinatura de e-mail', 'imagem com o link de convite', 'assinatura', 'a0000000-0000-4000-8000-000000000006', 'materiais/assinatura-email.png', null, 4);
+  ('Assinatura de e-mail', 'imagem com o link de convite', 'assinatura', 'a0000000-0000-4000-8000-000000000006', 'midia/06-patio-grupo.jpg', null, 4);
 
 -- ------------------------------------------------------------
 -- 2. Usuários (auth) → perfis (trigger)

@@ -61,13 +61,15 @@ npx playwright test                          # recria o banco de testes antes de
 
 | Rota | Tela do Figma | User story |
 |---|---|---|
+| `/conheca`, `/r/<slug>`, `/cadastro` | — (sem tela no protótipo; pedido da validação) | US-05 |
 | `/acesso`, `/recuperar-senha` | Acesso, Recuperar Senha, Recuperação Enviada | pré-condição |
 | `/` | Homepage — Média fidelidade | US-02, US-03 |
 | `/doar`, `/doar/confirmada` | Doação, Doação Confirmada | US-01 |
 | `/recorrencia` | Gerenciar Recorrência | US-02 |
 | `/jornada` | Minha Jornada | US-04 |
 | `/certificados`, `/verificar` | Certificado | US-04 |
-| `/atividades`, `/mobilizar`, `/compartilhar` | Atividades, Mobilizar, Compartilhar | Bloco 3 |
+| `/atividades` | Atividades | US-03 |
+| `/mobilizar`, `/compartilhar` | Mobilizar, Compartilhar | US-05 |
 
 **Imagens.** Os seis arquivos em `supabase/storage/midia/` são espaços reservados gerados automaticamente. Substitua-os pelas fotos ilustrativas do protótipo, **mantendo os nomes**: `01-dia-de-arte.jpg`, `02-reforco-escolar.jpg`, `03-primeira-infancia.jpg`, `04-tecnologia.jpg`, `05-roda-de-conversa.jpg`, `06-patio-grupo.jpg`.
 
@@ -80,6 +82,7 @@ Todos com senha `Ebenezer2026!`. Nenhum corresponde a pessoa real.
 | `eduardo@exemplo.com.br` | doador recorrente — usuário da demo | R$ 120/mês, 14 meses consecutivos, 4 marcos e 4 certificados (EC-2026-000148 = Guardião da Comunidade), 10 meses para o Guardião da Educação |
 | `rafael@exemplo.com.br` | doador pontual | 1 Pix há 5 meses; Primeiro Passo |
 | `renata@exemplo.com.br` | embaixadora (`/r/renata-c`) | 67 acessos, 12 doadores mobilizados, 7 recorrentes |
+| — | visitante | abra `/r/renata-c?c=whatsapp` numa janela anônima, crie a conta e doe: a Central da Renata passa a 13 |
 | `coordenacao@exemplo.com.br` | coordenação | lê tudo, publica e atualiza indicadores |
 
 ## Perímetro ético

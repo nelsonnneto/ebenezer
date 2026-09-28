@@ -2,21 +2,27 @@ import type { Metadata } from 'next';
 import { Moldura } from '@/components/shell/Moldura';
 import { Cabecalho, Conteudo } from '@/components/shell/Cabecalho';
 import { BotaoLink, Cartao, Nota, Rotulo } from '@/components/ui';
-import { recorrenciaAtual } from '@/lib/dados';
+import { recorrenciaAtual, sessao } from '@/lib/dados';
+import { primeiroNome } from '@/lib/formato';
 import { reais, reaisInteiros } from '@/lib/formato';
 import { PLANOS } from '@/lib/planos';
 import { BotaoPlano, FormDoacaoUnica } from './Formularios';
 
 export const metadata: Metadata = { title: 'Doar' };
 
-export default async function Doar() {
-  const rec = await recorrenciaAtual();
+export default async function Doar({ searchParams }: { searchParams: Promise<{ bemvindo?: string }> }) {
+  const [{ bemvindo }, rec, { perfil }] = await Promise.all([searchParams, recorrenciaAtual(), sessao()]);
   return (
     <Moldura ativa={null}>
       <Cabecalho volta={{ href: '/', rotulo: 'Voltar para a Home' }} rotulo="Apoiar o Instituto"
         titulo="Escolha como sua doação vai transformar vidas"
         texto="Contribua com um valor mensal recorrente ou faça uma doação única — cada aporte sustenta diretamente os programas do Instituto." />
       <Conteudo>
+        {bemvindo && !rec && (
+          <Cartao role="status" className="mb-8 border-accent bg-selected p-5">
+            <p className="text-corpo">Conta criada. Boas-vindas, <b>{primeiroNome(perfil.nome_exibicao)}</b>! Agora escolha como quer apoiar — você pode alterar ou encerrar a qualquer momento.</p>
+          </Cartao>
+        )}
         {rec && (
           <Cartao className="mb-8 flex items-center justify-between gap-6 border-accent bg-selected p-5">
             <p className="text-corpo">

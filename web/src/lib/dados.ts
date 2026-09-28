@@ -129,3 +129,59 @@ export async function eventosRecorrencia(recorrenciaId: string, limite = 5) {
   falhou('eventos da recorrência', error);
   return (data ?? []) as { id: string; tipo: string; valor_anterior: number | null; valor_novo: number | null; freq_anterior: string | null; freq_nova: string | null; em: string }[];
 }
+
+// ---------- Bloco 3: feed, rede do embaixador ----------
+import type { Cadencia, Embaixador, Material, OrigemCanal, RedeEmbaixador, RedeMes, ResumoFeed } from './tipos';
+
+export async function feedFiltrado(f: { cadencia?: Cadencia; programa?: string; de?: string; limite?: number }) {
+  const { sb } = await sessao();
+  let q = sb.from('v_feed').select('*').order('publicada_em', { ascending: false }).limit(f.limite ?? 12);
+  if (f.cadencia) q = q.eq('cadencia', f.cadencia);
+  if (f.programa) q = q.eq('programa_codigo', f.programa);
+  if (f.de) q = q.gte('publicada_em', f.de);
+  const { data, error } = await q;
+  falhou('feed', error);
+  return (data ?? []) as Publicacao[];
+}
+
+export async function resumoFeed(de: string, ate: string) {
+  const { sb } = await sessao();
+  const { data, error } = await sb.rpc('fn_resumo_feed', { p_de: de, p_ate: ate });
+  falhou('resumo do feed', error);
+  return data as ResumoFeed;
+}
+
+export async function meuEmbaixador() {
+  return (await embaixadorDoUsuario()) as Embaixador | null;
+}
+
+export async function painelRede() {
+  const { sb } = await sessao();
+  const [rede, canais, meses, materiais, metas] = await Promise.all([
+    sb.from('v_rede_embaixador').select('*').maybeSingle(),
+    sb.from('v_rede_origem_canal').select('canal,acessos,doadores').order('doadores', { ascending: false }).order('acessos', { ascending: false }),
+    sb.from('v_rede_mes').select('mes,novos_doadores').order('mes'),
+    sb.from('v_materiais_embaixador').select('*').order('ordem'),
+    sb.from('v_meta_progresso').select('*').eq('tipo', 'rede').limit(1).maybeSingle(),
+  ]);
+  for (const [nome, r] of [['rede', rede], ['canais', canais], ['meses', meses], ['materiais', materiais], ['meta', metas]] as const) falhou(nome, r.error);
+  return {
+    rede: rede.data as RedeEmbaixador | null,
+    canais: (canais.data ?? []) as OrigemCanal[],
+    meses: (meses.data ?? []) as RedeMes[],
+    materiais: (materiais.data ?? []) as Material[],
+    meta: metas.data as MetaProgresso | null,
+  };
+}
+
+export async function trilhaEmbaixador() {
+  const { sb, perfil } = await sessao();
+  const { data, error } = await sb.from('v_trilha').select('*').eq('doador_id', perfil.id).eq('trilha', 'embaixador').order('ordem');
+  falhou('trilha do embaixador', error);
+  return (data ?? []) as MarcoTrilha[];
+}
+
+/** Endereço público do site, para links compartilháveis que funcionem de verdade. */
+export const SITE = (process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000').replace(/\/$/, '');
+export const linkConvite = (slug: string | null, canal?: string) =>
+  `${SITE}/r/${slug ?? 'instituto'}${canal ? `?c=${canal}` : ''}`;

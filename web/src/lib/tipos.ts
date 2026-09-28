@@ -34,3 +34,17 @@ export interface PainelImpacto {
 }
 export interface DoacoesMes { periodo: string; total_centavos: number; doadores: number; }
 export interface MetaProgresso { meta_id: string; tipo: 'anual' | 'rede'; rotulo: string; alvo: number; realizado: number; periodo_inicio: string; periodo_fim: string; }
+export type Cadencia = 'diaria' | 'semanal' | 'mensal';
+export type Rede = 'instagram' | 'whatsapp' | 'x' | 'facebook' | 'linkedin';
+export interface ResumoFeed { publicacoes: number; programas: number; diarias: number; semanais: number; mensais: number; }
+export interface Embaixador { id: string; slug: string; ativo: boolean; }
+export interface RedeEmbaixador {
+  embaixador_id: string; slug: string; acessos_pelo_link: number; doadores_mobilizados: number;
+  valor_total_centavos: number; recorrentes_originados: number; taxa_conversao: number | null;
+}
+export interface OrigemCanal { canal: string; acessos: number; doadores: number; }
+export interface RedeMes { mes: string; novos_doadores: number; }
+export interface Material {
+  id: string; titulo: string; descricao: string | null; tipo: 'card' | 'texto' | 'post' | 'assinatura';
+  url_storage: string | null; imagem_url: string | null; imagem_alt: string | null; texto_pronto: string | null; ordem: number;
+}

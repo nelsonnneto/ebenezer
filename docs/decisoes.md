@@ -67,3 +67,18 @@ Cada decisão em meia página: contexto, decisão, consequências. Numeradas na 
 **Decisão.** Next.js 16 com Server Components para leitura e Server Actions para escrita; cada ação chama exatamente uma RPC e só traduz o erro para o doador. O único conteúdo mantido no front são os três planos sugeridos da tela de Doação (nomes e textos editoriais) e as paradas do seletor de valor — o banco aceita qualquer valor entre R$ 25 e R$ 500.
 
 **Consequências.** Nenhuma regra de marco, continuidade, agregação ou privacidade existe em TypeScript. Os testes de regra ficam no pgTAP; os testes do app verificam apenas o percurso das user stories.
+
+## ADR-09 · Embaixador por adesão e porta de entrada pública
+
+**Contexto.** O protótipo trata a Central do Embaixador como área de quem já mobiliza (Renata), mas não desenha como um doador passa a ter link. A validação com João Pedro Machado pediu que a plataforma fosse acessível por um link nos perfis do Instituto (Instagram, X, LinkedIn, Facebook) — o que exige uma página que abra sem login. O protótipo não tem essa tela.
+
+**Decisão.**
+1. *Adesão pelo próprio doador.* `fn_tornar_embaixador()` cria o link de quem já tem ao menos uma doação confirmada. É idempotente, gera slug legível (`eduardo-m`) e reserva `instituto`, `conheca` e `admin`. A coordenação pode desativar o link (`embaixador.ativo = false`); o doador não o reativa sozinho.
+2. *Link institucional.* `/r/instituto?c=<rede>` é o endereço para os perfis do Instituto: gera `origem` sem embaixador, com o canal. É o link que atende ao pedido da validação.
+3. *Porta de entrada.* `/r/<slug>` registra a origem, grava um cookie próprio `ec_origem` (httpOnly, 90 dias, sem dado pessoal) e leva a `/conheca`, que mostra apenas o que a RLS entrega ao papel `anon`: indicadores e publicações marcados como públicos e o total agregado da meta anual. O convite é anunciado sem nomear quem convidou.
+4. *Vinculação.* `/cadastro` (ou `/acesso`, para quem já tem conta) chama `fn_vincular_origem` com o cookie; a função só vincula se o doador ainda não tiver origem. Atribuição por **último clique** dentro da janela de 90 dias.
+5. *Compartilhar.* Os textos sugeridos são conteúdo editorial do front (exceção à ADR-08, como os planos) e nunca incluem valor. Cada clique numa rede chama `fn_registrar_compartilhamento`, que alimenta o marco Voz da Causa.
+
+**Consequências.** O embaixador passa a ser um estado do doador, não um cadastro à parte. `origem` pode receber linhas de visitantes que não se cadastram (é o que mede acessos e conversão); a função é aberta ao `anon`, portanto a produção precisa de limite de taxa no gateway (Supabase hospedado: *rate limit* por IP na Edge ou regra no proxy) — pendência registrada para o Bloco 4. O consentimento de comunicação é opcional e gravado com data (`fn_atualizar_consentimento`); a conta em si se apoia na execução do contrato de doação (LGPD, art. 7º, V).
+
+**Lacunas do protótipo.** A "Agenda da próxima semana" da tela Atividades ficou de fora: não há entidade de agenda no modelo e criá-la só para a tela seria conteúdo sem dono. Em seu lugar, um cartão com a cadência de publicação. O "Balanço da semana" é derivado das publicações (não há indicador semanal).
