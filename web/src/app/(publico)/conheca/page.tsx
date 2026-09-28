@@ -5,7 +5,7 @@ import { Rodape } from '@/components/shell/Rodape';
 import { BotaoLink, Kpi, Nota, Progresso, Rotulo } from '@/components/ui';
 import { CartaoPublicacao } from '@/components/dominio/CartaoPublicacao';
 import { urlStorage } from '@/lib/dados';
-import { inteiro, reaisInteiros } from '@/lib/formato';
+import { inteiro } from '@/lib/formato';
 import { vitrine } from '@/lib/publico';
 
 export const metadata: Metadata = {
@@ -65,14 +65,14 @@ export default async function Conheca({ searchParams }: { searchParams: Promise<
           <div className="mt-6 grid grid-cols-4 gap-4">
             <Kpi valor={inteiro(v.impacto.criancas_atendidas)} rotulo="crianças atendidas no último mês" />
             <Kpi valor={inteiro(v.impacto.horas_atividade)} rotulo="horas de atividade no ano" />
-            <Kpi valor={inteiro(v.impacto.atividades)} rotulo="atividades realizadas" />
             <Kpi valor={`${inteiro(v.impacto.frequencia_media)}%`} rotulo="frequência média" />
+            <Kpi valor={v.impacto.programas.length} rotulo="programas com indicador público" />
           </div>
           {v.meta && pctMeta !== null && (
             <div className="mt-6 rounded-lg border border-border bg-surface p-6">
               <div className="flex items-baseline justify-between">
                 <p className="text-sub">{v.meta.rotulo}</p>
-                <p className="text-pequeno text-ink-2"><strong className="text-ink">{Math.round(pctMeta * 100)}%</strong> de {reaisInteiros(Number(v.meta.alvo))}</p>
+                <p className="text-sub">{Math.round(pctMeta * 100)}% da meta</p>
               </div>
               <Progresso valor={pctMeta} rotulo="Progresso da meta anual" />
               <p className="text-legenda mt-3 text-ink-3">Total agregado de todas as contribuições. Nenhum valor individual é exibido.</p>
@@ -121,7 +121,7 @@ export default async function Conheca({ searchParams }: { searchParams: Promise<
 
         <Nota>
           Transparência com proteção: os indicadores são agregados por programa e as imagens são ilustrativas — não retratam crianças atendidas.
-          Nenhuma criança é identificada e nenhum resultado individual é divulgado.
+          Nenhuma criança é identificada, nenhum resultado individual é divulgado e nenhum valor de contribuição é exibido.
         </Nota>
       </main>
       <Rodape />

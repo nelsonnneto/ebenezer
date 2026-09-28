@@ -61,7 +61,7 @@ npx playwright test                          # recria o banco de testes antes de
 
 | Rota | Tela do Figma | User story |
 |---|---|---|
-| `/conheca`, `/r/<slug>`, `/cadastro` | — (sem tela no protótipo; pedido da validação) | US-05 |
+| `/conheca`, `/r/<slug>`, `/cadastro` | Conheça o Instituto — Página Pública, Criar Conta (pedido da validação) | US-05 |
 | `/acesso`, `/recuperar-senha` | Acesso, Recuperar Senha, Recuperação Enviada | pré-condição |
 | `/` | Homepage — Média fidelidade | US-02, US-03 |
 | `/doar`, `/doar/confirmada` | Doação, Doação Confirmada | US-01 |
@@ -71,7 +71,7 @@ npx playwright test                          # recria o banco de testes antes de
 | `/atividades` | Atividades | US-03 |
 | `/mobilizar`, `/compartilhar` | Mobilizar, Compartilhar | US-05 |
 
-**Imagens.** Os seis arquivos em `supabase/storage/midia/` são espaços reservados gerados automaticamente. Substitua-os pelas fotos ilustrativas do protótipo, **mantendo os nomes**: `01-dia-de-arte.jpg`, `02-reforco-escolar.jpg`, `03-primeira-infancia.jpg`, `04-tecnologia.jpg`, `05-roda-de-conversa.jpg`, `06-patio-grupo.jpg`.
+**Imagens.** Os seis arquivos em `supabase/storage/midia/` são as fotos ilustrativas do protótipo (1168 × 784). Não retratam crianças atendidas pelo Instituto; toda tela que as exibe traz essa indicação. Para trocar uma imagem, mantenha o nome do arquivo: `01-dia-de-arte.jpg`, `02-reforco-escolar.jpg`, `03-primeira-infancia.jpg`, `04-tecnologia.jpg`, `05-roda-de-conversa.jpg`, `06-patio-grupo.jpg`.
 
 ## Usuários de demonstração
 

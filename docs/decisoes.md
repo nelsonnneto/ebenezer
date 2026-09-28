@@ -70,7 +70,7 @@ Cada decisão em meia página: contexto, decisão, consequências. Numeradas na 
 
 ## ADR-09 · Embaixador por adesão e porta de entrada pública
 
-**Contexto.** O protótipo trata a Central do Embaixador como área de quem já mobiliza (Renata), mas não desenha como um doador passa a ter link. A validação com João Pedro Machado pediu que a plataforma fosse acessível por um link nos perfis do Instituto (Instagram, X, LinkedIn, Facebook) — o que exige uma página que abra sem login. O protótipo não tem essa tela.
+**Contexto.** O protótipo trata a Central do Embaixador como área de quem já mobiliza (Renata), mas não desenha como um doador passa a ter link. A validação com João Pedro Machado pediu que a plataforma fosse acessível por um link nos perfis do Instituto (Instagram, X, LinkedIn, Facebook) — o que exige uma página que abra sem login. O protótipo não tinha essa tela; ela foi desenhada depois do código (frames *Conheça o Instituto — Página Pública* e *Criar Conta*, com o fluxo de protótipo *Visitante (link público)*).
 
 **Decisão.**
 1. *Adesão pelo próprio doador.* `fn_tornar_embaixador()` cria o link de quem já tem ao menos uma doação confirmada. É idempotente, gera slug legível (`eduardo-m`) e reserva `instituto`, `conheca` e `admin`. A coordenação pode desativar o link (`embaixador.ativo = false`); o doador não o reativa sozinho.
@@ -81,4 +81,4 @@ Cada decisão em meia página: contexto, decisão, consequências. Numeradas na 
 
 **Consequências.** O embaixador passa a ser um estado do doador, não um cadastro à parte. `origem` pode receber linhas de visitantes que não se cadastram (é o que mede acessos e conversão); a função é aberta ao `anon`, portanto a produção precisa de limite de taxa no gateway (Supabase hospedado: *rate limit* por IP na Edge ou regra no proxy) — pendência registrada para o Bloco 4. O consentimento de comunicação é opcional e gravado com data (`fn_atualizar_consentimento`); a conta em si se apoia na execução do contrato de doação (LGPD, art. 7º, V).
 
-**Lacunas do protótipo.** A "Agenda da próxima semana" da tela Atividades ficou de fora: não há entidade de agenda no modelo e criá-la só para a tela seria conteúdo sem dono. Em seu lugar, um cartão com a cadência de publicação. O "Balanço da semana" é derivado das publicações (não há indicador semanal).
+**Lacunas do protótipo.** A "Agenda da próxima semana" da tela Atividades foi retirada do escopo por decisão do time: não há entidade de agenda no modelo e criá-la só para a tela seria conteúdo sem dono. Em seu lugar, um cartão com a cadência de publicação. O "Balanço da semana" é derivado das publicações (não há indicador semanal).
