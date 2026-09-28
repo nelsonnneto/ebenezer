@@ -1,0 +1,18 @@
+# Mantém o projeto do plano gratuito do Supabase ativo: projetos sem atividade por 1 semana são pausados.
+# A página pública consulta o banco (indicadores, programas, feed), então um acesso a cada 3 dias basta.
+name: manter-ativo
+on:
+  schedule:
+    - cron: '17 11 */3 * *'   # a cada 3 dias, 08:17 em Brasília
+  workflow_dispatch:
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Acessa a página pública
+        env:
+          SITE: ${{ vars.SITE_URL || 'https://ebenezer-vert.vercel.app' }}
+        run: |
+          code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 60 "$SITE/conheca")
+          echo "GET $SITE/conheca → $code"
+          test "$code" = "200"

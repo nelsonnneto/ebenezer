@@ -82,3 +82,17 @@ Cada decisão em meia página: contexto, decisão, consequências. Numeradas na 
 **Consequências.** O embaixador passa a ser um estado do doador, não um cadastro à parte. `origem` pode receber linhas de visitantes que não se cadastram (é o que mede acessos e conversão); a função é aberta ao `anon`; por isso a migração 0011 limita o registro a 30 acessos por minuto por embaixador, sem guardar IP. O consentimento de comunicação é opcional e gravado com data (`fn_atualizar_consentimento`); a conta em si se apoia na execução do contrato de doação (LGPD, art. 7º, V).
 
 **Lacunas do protótipo.** A "Agenda da próxima semana" da tela Atividades foi retirada do escopo por decisão do time: não há entidade de agenda no modelo e criá-la só para a tela seria conteúdo sem dono. Em seu lugar, um cartão com a cadência de publicação. O "Balanço da semana" é derivado das publicações (não há indicador semanal).
+
+## ADR-10 · Implantação da demonstração em serviços gerenciados gratuitos
+
+**Contexto.** A entrega da Semana 10 pede o MVP acessível por avaliadores e pelos participantes dos testes, sem custo e sem infraestrutura própria. A equipe não tem Docker nem a CLI do Supabase configurados no computador do responsável pela publicação.
+
+**Decisão.**
+1. *Supabase Free + Vercel Hobby*, conectados ao GitHub: cada `git push` na `main` publica o app.
+2. *Banco provisionado por script único no SQL Editor* (`scripts/gerar-sql-hospedado.sh`). O editor pode executar cada comando numa sessão própria e não trata o script como transação. Por isso o script não cria objetos auxiliares, não depende de `set local` e qualifica as funções do pgcrypto (`extensions.crypt`). Um script de limpeza permite repetir a instalação.
+3. *Configuração lida em tempo de execução, no servidor*, com nomes sem `NEXT_PUBLIC_` (`SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SITE_URL`). A Vercel desaconselha o prefixo público em variáveis com "KEY", e nenhum desses valores é usado no navegador.
+4. *Rotina "manter ativo"* no GitHub Actions: o plano gratuito do Supabase pausa projetos sem atividade por uma semana.
+
+**Revisões de segurança feitas nesta etapa.** (a) Funções internas deixaram de ser executáveis por `PUBLIC`. Antes, um visitante poderia registrar doação confirmada chamando a função diretamente (migração 0011). (b) Limite de 30 acessos por minuto por link de embaixador (0011). (c) A anonimização passou a remover o dado pessoal também do cadastro de login e pode ser executada pela coordenação no SQL Editor (0012).
+
+**Consequências.** Custo zero na demonstração. Os limites do plano gratuito estão em `docs/custos.md`: sem backup diário, pausa por inatividade e, na Vercel, uso não comercial. Para produção com o Instituto, recomenda-se Supabase Pro e Vercel Pro (ou hospedagem equivalente que admita uso institucional), SMTP próprio e domínio `.org.br`.

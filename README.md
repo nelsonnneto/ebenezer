@@ -4,6 +4,8 @@ Plataforma de relacionamento com doadores do Instituto Social Ebenézer — MVP 
 
 O produto converte o doador episódico em recorrente e o mantém: doação em poucos passos, controle total da recorrência, evidência agregada de resultado, reconhecimento por continuidade e mobilização da própria rede. Toda regra de negócio vive no banco; o front-end só chama funções e lê views.
 
+**No ar (dados sintéticos):** https://ebenezer-vert.vercel.app · página pública: https://ebenezer-vert.vercel.app/conheca
+
 **Protótipo navegável (Figma):** https://www.figma.com/proto/FF5lpXwZLKRE6GdU7qBhcN/?node-id=106-1059&starting-point-node-id=106-1059&scaling=min-zoom
 
 ## Estrutura
@@ -11,17 +13,34 @@ O produto converte o doador episódico em recorrente e o mantém: doação em po
 ```
 supabase/
   config.toml            configuração do Supabase CLI (Auth, Storage, bucket de imagens, seed)
-  migrations/            9 migrations: enums → 4 domínios → funções → views → RLS → alinhamento ao Figma
+  migrations/            12 migrations: enums → 4 domínios → funções → views → RLS → alinhamento ao Figma
+                         → rede e feed → ambiente hospedado → anonimização
   seed.sql               dados sintéticos, relativos ao mês corrente
-  storage/midia/         imagens ilustrativas (hoje, espaços reservados — ver abaixo)
-  tests/                 pgTAP: esquema, regras, RLS e RPCs (62 asserções)
+  storage/midia/         as seis fotos ilustrativas
+  hospedado/             epílogo (Auth/Storage) e limpeza do projeto hospedado
+  tests/                 pgTAP: esquema, regras, RLS, RPCs, rede, segurança e LGPD (83 asserções)
 web/                     front-end Next.js 16 + Tailwind 4, fiel ao protótipo em Figma
-  src/app/               telas: acesso, home, doar, recorrência, jornada, certificados, verificar
-  e2e/                   Playwright: US-01, US-02 e US-04 ponta a ponta (8 testes) + evidências
+  src/app/               telas públicas (conheça, cadastro, acesso, verificar) e do doador
+  e2e/                   Playwright: US-01 a US-05 e página pública (12 testes) + evidências
 dev/supabase-local/      emulador da API do Supabase para ambientes sem Docker (ADR-07)
-scripts/db-local.sh      recria e testa o banco num Postgres puro
-docs/                    modelo de dados e decisões técnicas
+scripts/                 db-local.sh (banco de testes) · gerar-sql-hospedado.sh (scripts para o SQL Editor)
+testes/                  planilha de registro dos testes com usuários
+docs/                    modelo de dados · decisões (ADR) · implantação · operação · custos
+                         · testes com usuários · roteiro do vídeo
+.github/workflows/       CI (pgTAP + build + e2e) · manter-ativo (evita a pausa do plano gratuito)
 ```
+
+## Documentação
+
+| Documento | Para quê |
+|---|---|
+| [`docs/modelo-de-dados.md`](docs/modelo-de-dados.md) | entidades, relacionamentos, base legal e retenção de cada dado |
+| [`docs/decisoes.md`](docs/decisoes.md) | decisões de arquitetura (ADR-01 a ADR-10) |
+| [`docs/implantacao.md`](docs/implantacao.md) | como publicar no Supabase e na Vercel |
+| [`docs/operacao.md`](docs/operacao.md) | rotinas da coordenação e manutenção técnica |
+| [`docs/custos.md`](docs/custos.md) | custo da demonstração e estimativa de produção |
+| [`docs/testes-com-usuarios.md`](docs/testes-com-usuarios.md) + [`testes/registro-testes.xlsx`](testes/registro-testes.xlsx) | roteiro e registro dos testes com 3 usuários |
+| [`docs/roteiro-video.md`](docs/roteiro-video.md) | roteiro do vídeo de demonstração |
 
 ## Rodar o banco
 
