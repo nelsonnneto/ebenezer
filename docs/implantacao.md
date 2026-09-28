@@ -36,15 +36,17 @@ Supabase → **Storage** → bucket `midia` (criado pelo script) → *Upload fil
 
 1. *Add New → Project* → importar `nelsonnneto/ebenezer`.
 2. **Root Directory: `web`** (framework detectado: Next.js).
-3. *Environment Variables*:
+3. *Environment Variables* (Production, Preview e Development). O app lê os nomes **sem** prefixo, em tempo de execução — a Vercel desaconselha `NEXT_PUBLIC_` para chaves, e nenhum destes valores é usado no navegador:
 
    | Nome | Valor |
    |---|---|
-   | `NEXT_PUBLIC_SUPABASE_URL` | `https://pcjxjneqzzhlyxfexaja.supabase.co` |
-   | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | a *publishable key* |
-   | `NEXT_PUBLIC_SITE_URL` | o endereço público do app (ex.: `https://ebenezer-conecta.vercel.app`) |
+   | `SUPABASE_URL` | `https://pcjxjneqzzhlyxfexaja.supabase.co` |
+   | `SUPABASE_ANON_KEY` | a *publishable key* |
+   | `SITE_URL` | o endereço público do app (`https://ebenezer-vert.vercel.app`); se ausente, o app usa o domínio de produção informado pela Vercel |
 
-4. *Deploy*. Se o endereço definitivo só aparecer depois do primeiro deploy, ajuste `NEXT_PUBLIC_SITE_URL` e faça *Redeploy* — as variáveis `NEXT_PUBLIC_*` são embutidas no build.
+   Os nomes com `NEXT_PUBLIC_` continuam aceitos (é o que o `.env.local` usa no desenvolvimento).
+
+4. *Deploy*. Mudou uma variável? Faça *Redeploy* para que a nova configuração valha.
 
 ## 5. Conferência pós-implantação
 

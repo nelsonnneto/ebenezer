@@ -5,6 +5,8 @@ import { PainelInstitucional } from '../PainelInstitucional';
 import { FormCadastro } from './FormCadastro';
 
 export const metadata: Metadata = { title: 'Criar conta' };
+// Renderizada a cada acesso: a URL do Supabase (foto do painel) vem do ambiente em tempo de execução.
+export const dynamic = 'force-dynamic';
 
 export default function Cadastro() {
   return (

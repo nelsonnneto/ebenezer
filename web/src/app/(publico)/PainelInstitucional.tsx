@@ -1,6 +1,8 @@
+import { supabaseUrl } from '@/lib/ambiente';
+
 /** Metade esquerda das telas de acesso: foto ilustrativa + faixa da marca (Figma: Acesso — Web · 1440). */
 export function PainelInstitucional() {
-  const foto = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/midia/05-roda-de-conversa.jpg`;
+  const foto = `${supabaseUrl()}/storage/v1/object/public/midia/05-roda-de-conversa.jpg`;
   return (
     <div className="relative hidden min-h-screen flex-col justify-end bg-skeleton lg:flex">
       <img src={foto} alt="Crianças e educadores sentados em roda, sorrindo. Imagem ilustrativa." className="absolute inset-0 h-full w-full object-cover" />

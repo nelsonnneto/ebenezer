@@ -119,7 +119,7 @@ export async function embaixadorDoUsuario() {
 
 /** URL pública de um objeto do Storage ("midia/01.jpg" → http://…/storage/v1/object/public/midia/01.jpg) */
 export function urlStorage(caminho: string | null | undefined) {
-  return caminho ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${caminho}` : null;
+  return caminho ? `${supabaseUrl()}/storage/v1/object/public/${caminho}` : null;
 }
 
 export async function eventosRecorrencia(recorrenciaId: string, limite = 5) {
@@ -132,6 +132,7 @@ export async function eventosRecorrencia(recorrenciaId: string, limite = 5) {
 
 // ---------- Bloco 3: feed, rede do embaixador ----------
 import type { Cadencia, Embaixador, Material, OrigemCanal, RedeEmbaixador, RedeMes, ResumoFeed } from './tipos';
+import { siteUrl, supabaseUrl } from './ambiente';
 
 export async function feedFiltrado(f: { cadencia?: Cadencia; programa?: string; de?: string; limite?: number }) {
   const { sb } = await sessao();
@@ -185,6 +186,6 @@ export async function trilhaEmbaixador() {
 }
 
 /** Endereço público do site, para links compartilháveis que funcionem de verdade. */
-export const SITE = (process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000').replace(/\/$/, '');
+export const SITE = siteUrl();
 export const linkConvite = (slug: string | null, canal?: string) =>
   `${SITE}/r/${slug ?? 'instituto'}${canal ? `?c=${canal}` : ''}`;
