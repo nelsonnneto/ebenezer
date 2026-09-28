@@ -11,11 +11,15 @@ Supabase hospedado (banco, Auth, Storage) + Vercel (app Next.js). Dados 100% sin
 
 ## 1. Banco (uma vez, em projeto vazio)
 
-1. Gere o script: `scripts/gerar-sql-hospedado.sh` → `dist/ebenezer-supabase-hospedado.sql` (migrações + seed + epílogo).
-2. Supabase → **SQL Editor** → *New query* → cole o arquivo inteiro → **Run**.
-3. O resultado final é uma linha de conferência: 25 usuários, 25 doadores, 4 programas, 1 embaixador, 1 bucket `midia`.
+1. Gere os scripts: `scripts/gerar-sql-hospedado.sh` → `dist/ebenezer-supabase-hospedado.sql` (instalação: migrações + seed + epílogo) e `dist/ebenezer-supabase-limpar.sql` (limpeza).
+2. Copie o arquivo inteiro sem passar por editor de texto: `pbcopy < dist/ebenezer-supabase-hospedado.sql`.
+3. Supabase → **SQL Editor** → *New query* → cole → sem nada selecionado → **Run**.
+4. O resultado final é uma linha de conferência: 25 usuários, 25 doadores, 4 programas, 1 embaixador, 135 doações, 18 publicações, 1 bucket `midia`.
 
-O script é transacional (se algo falhar, nada fica aplicado) e se recusa a rodar sobre um banco que já tenha o esquema.
+**O SQL Editor pode executar cada comando numa sessão própria e não trata o script como uma transação.** Por isso o script não usa tabelas temporárias nem `set local`, e qualifica as funções do pgcrypto (`extensions.crypt`). Se a execução parar no meio, rode `dist/ebenezer-supabase-limpar.sql` (remove o schema `public` do projeto, o gatilho em `auth.users` e os usuários `@exemplo.com.br`; preserva o bucket e as fotos) e execute a instalação de novo. A instalação se recusa a rodar sobre um projeto que já tenha o esquema.
+
+Verificação feita antes da entrega: instalação → limpeza → instalação, executando cada comando numa conexão nova, com o pgcrypto no schema `extensions` e `search_path` sem `extensions` (condições do Supabase hospedado).
+
 Mudanças futuras de esquema entram como **novas** migrações e são aplicadas uma a uma no SQL Editor (ou com `supabase db push`).
 
 ## 2. Imagens

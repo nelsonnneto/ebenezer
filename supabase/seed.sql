@@ -48,13 +48,17 @@ insert into public.material_campanha (titulo, descricao, tipo, imagem_id, url_st
 -- ------------------------------------------------------------
 -- 2. Usuários (auth) → perfis (trigger)
 -- ------------------------------------------------------------
-create temp table seed_pessoas (n int, id uuid, nome text, email text, papel public.papel_usuario default 'doador');
-insert into seed_pessoas (n, id, nome, email, papel) values
+-- Tabelas auxiliares num schema próprio (não temporárias): o SQL Editor do Supabase pode executar
+-- cada comando numa sessão diferente, e tabelas temporárias não sobrevivem entre sessões.
+drop schema if exists seed_aux cascade;
+create schema seed_aux;
+create table seed_aux.seed_pessoas (n int, id uuid, nome text, email text, papel public.papel_usuario default 'doador');
+insert into seed_aux.seed_pessoas (n, id, nome, email, papel) values
   (0,  'd0000000-0000-4000-8000-000000000000', 'Juliana Prado',   'coordenacao@exemplo.com.br', 'coordenacao'),
   (1,  'd0000000-0000-4000-8000-000000000001', 'Eduardo Mendes',  'eduardo@exemplo.com.br', 'doador'),
   (2,  'd0000000-0000-4000-8000-000000000002', 'Rafael Nogueira', 'rafael@exemplo.com.br', 'doador'),
   (3,  'd0000000-0000-4000-8000-000000000003', 'Renata Coutinho', 'renata@exemplo.com.br', 'doador');
-insert into seed_pessoas (n, id, nome, email)
+insert into seed_aux.seed_pessoas (n, id, nome, email)
 select 3 + g, ('d0000000-0000-4000-8000-0000000000' || lpad((3 + g)::text, 2, '0'))::uuid, nome, lower(replace(split_part(nome, ' ', 1), 'ç', 'c')) || g || '@exemplo.com.br'
 from unnest(array[
   'Ana Beatriz Farias','Bruno Cardoso','Camila Teixeira','Diego Albuquerque','Elaine Moraes','Fábio Siqueira','Gabriela Lins',
@@ -66,12 +70,12 @@ insert into auth.users (instance_id, id, aud, role, email, encrypted_password, e
 select '00000000-0000-0000-0000-000000000000', id, 'authenticated', 'authenticated', email,
        crypt('Ebenezer2026!', gen_salt('bf')), now(), '{"provider":"email","providers":["email"]}', jsonb_build_object('nome', nome),
        now() - interval '15 months', now()
-from seed_pessoas;
+from seed_aux.seed_pessoas;
 insert into auth.identities (id, user_id, provider_id, provider, identity_data, last_sign_in_at, created_at, updated_at)
-select gen_random_uuid(), id, id::text, 'email', jsonb_build_object('sub', id::text, 'email', email), now(), now(), now() from seed_pessoas;
+select gen_random_uuid(), id, id::text, 'email', jsonb_build_object('sub', id::text, 'email', email), now(), now(), now() from seed_aux.seed_pessoas;
 
 update public.doador d set papel = p.papel, consent_comunicacao = true, consent_comunicacao_em = now() - interval '15 months'
-from seed_pessoas p where p.id = d.id;
+from seed_aux.seed_pessoas p where p.id = d.id;
 
 -- ------------------------------------------------------------
 -- 3. Embaixadora e origens da rede (Renata)
@@ -91,7 +95,7 @@ begin
 end $$;
 -- vincula as 12 primeiras origens (WhatsApp 6, LinkedIn 3, evento 2, direto 1) aos doadores 4..15
 with alvo as (
-  select p.id as doador_id, row_number() over (order by p.n) as rn from seed_pessoas p where p.n between 4 and 15
+  select p.id as doador_id, row_number() over (order by p.n) as rn from seed_aux.seed_pessoas p where p.n between 4 and 15
 ), canais as (
   select unnest(array['whatsapp','whatsapp','whatsapp','whatsapp','whatsapp','whatsapp','linkedin','linkedin','linkedin','evento','evento','direto'])::public.canal_origem as canal,
          generate_series(1, 12) as rn
@@ -105,25 +109,25 @@ where o.id = g.id;
 -- ------------------------------------------------------------
 -- 4. Contribuições (relativas ao mês corrente)
 -- ------------------------------------------------------------
-create temp table seed_plano (
+create table seed_aux.seed_plano (
   n int, meses_atras_inicio int, meses int, valor int, freq public.frequencia_recorrencia default 'mensal',
   meio public.meio_pagamento default 'simulado', meio_ref text, pausa_em int, cancela_em int, altera_em int, altera_para int, dia int default 12
 );
 -- n | início (meses atrás) | meses de doação | valor | ...
-insert into seed_plano (n, meses_atras_inicio, meses, valor, meio, meio_ref, altera_em, altera_para, dia) values
+insert into seed_aux.seed_plano (n, meses_atras_inicio, meses, valor, meio, meio_ref, altera_em, altera_para, dia) values
   (1, 13, 14, 10000, 'cartao', 'cartão final 4417', 7, 12000, 12);           -- Eduardo: 14 meses, R$100 → R$120 há 7 meses
-insert into seed_plano (n, meses_atras_inicio, meses, valor, dia) values
+insert into seed_aux.seed_plano (n, meses_atras_inicio, meses, valor, dia) values
   (4, 9, 10,  5000, 5), (5, 8, 9, 15000, 18), (6, 7, 8, 20000, 3), (7, 6, 7, 5000, 22),
   (8, 5, 6, 10000, 9), (9, 4, 5, 8000, 14), (10, 2, 3, 12000, 27),                       -- 7 recorrentes originados por Renata
   (16, 12, 13, 5000, 6), (17, 11, 12, 25000, 15), (18, 10, 11, 3000, 20), (19, 9, 10, 7500, 8); -- recorrentes antigos
-insert into seed_plano (n, meses_atras_inicio, meses, valor, pausa_em, dia) values
+insert into seed_aux.seed_plano (n, meses_atras_inicio, meses, valor, pausa_em, dia) values
   (20, 11, 8, 6000, 3, 11);                                                   -- pausado há 3 meses, sem quebra de sequência
-insert into seed_plano (n, meses_atras_inicio, meses, valor, cancela_em, dia) values
+insert into seed_aux.seed_plano (n, meses_atras_inicio, meses, valor, cancela_em, dia) values
   (21, 12, 8, 4000, 4, 4);                                                    -- cancelado há 4 meses: sequência zerada
 
 -- Doações únicas: pessoa | meses atrás | valor
-create temp table seed_unicas (n int, meses_atras int, valor int, dia int default 15);
-insert into seed_unicas values
+create table seed_aux.seed_unicas (n int, meses_atras int, valor int, dia int default 15);
+insert into seed_aux.seed_unicas values
   (2, 5, 8000, 21),                                                           -- Rafael: um Pix, cinco meses atrás
   (11, 3, 15000, 2), (12, 2, 30000, 19), (13, 1, 5000, 9), (14, 0, 10000, 6), (15, 4, 20000, 25),  -- 5 pontuais originados
   (22, 6, 50000, 10), (23, 2, 12000, 17), (24, 0, 25000, 3),
@@ -133,8 +137,8 @@ do $$
 declare p record; u record; v_id uuid; v_doador uuid; v_mes date; v_inicio date; v_valor int; k int; v_status public.status_recorrencia;
         v_atual date := date_trunc('month', current_date)::date;
 begin
-  for p in select * from seed_plano order by n loop
-    select id into v_doador from seed_pessoas where n = p.n;
+  for p in select * from seed_aux.seed_plano order by n loop
+    select id into v_doador from seed_aux.seed_pessoas where n = p.n;
     v_inicio := (v_atual - (p.meses_atras_inicio || ' months')::interval)::date + (p.dia - 1);
     v_status := case when p.pausa_em is not null then 'pausada' when p.cancela_em is not null then 'cancelada' else 'ativa' end;
     insert into public.recorrencia (doador_id, valor_centavos, frequencia, status, meio, meio_ref, iniciada_em,
@@ -166,8 +170,8 @@ begin
     end if;
   end loop;
 
-  for u in select * from seed_unicas loop
-    select id into v_doador from seed_pessoas where n = u.n;
+  for u in select * from seed_aux.seed_unicas loop
+    select id into v_doador from seed_aux.seed_pessoas where n = u.n;
     v_mes := (v_atual - (u.meses_atras || ' months')::interval)::date + (u.dia - 1);
     if v_mes > current_date then v_mes := current_date; end if;
     perform public.fn_confirmar_doacao(v_doador, u.valor, 'unica', 'pix', null, v_mes::timestamptz + interval '14 hours');
@@ -246,4 +250,4 @@ join pr on pr.codigo = t.prog
 join (select generate_series(1,6) as n, ('a0000000-0000-4000-8000-00000000000' || generate_series(1,6))::uuid as img) i on i.n = t.img_n
 cross join coord;
 
-drop table seed_pessoas; drop table seed_plano; drop table seed_unicas;
+drop schema seed_aux cascade;
