@@ -1,6 +1,6 @@
 # Modelo de dados
 
-Quinze entidades em quatro domínios. Nenhuma delas é "criança": a fronteira ética do bloco 6 do dossiê está no esquema, não numa política de uso. Fonte da verdade: `supabase/migrations/`. Este documento descreve a intenção; o SQL descreve o fato.
+Dezesseis entidades em quatro domínios. Nenhuma delas é "criança": a fronteira ética do bloco 6 do dossiê está no esquema, não numa política de uso. Fonte da verdade: `supabase/migrations/`. Este documento descreve a intenção; o SQL descreve o fato.
 
 ```mermaid
 erDiagram
@@ -72,7 +72,7 @@ erDiagram
 
 ## Continuidade: como os meses são contados
 
-Um mês conta quando tem ao menos uma doação confirmada. Uma **pausa** registrada em `recorrencia_evento` cobre os meses seguintes sem quebrar a sequência — e sem somar. **Cancelamento** ou simples ausência de doação quebram a sequência a partir do mês seguinte. A sequência só está viva se o último mês coberto é o corrente ou o anterior.
+Um mês conta quando tem ao menos uma doação confirmada. Uma **pausa** registrada em `recorrencia_evento` cobre os meses seguintes sem quebrar a sequência — e sem somar. **Cancelamento** ou simples ausência de doação quebram a sequência a partir do mês seguinte. A sequência só está viva se o último mês coberto é o corrente ou o anterior. Enquanto a cobrança do mês corrente não ocorre, esse mês fica em aberto: a contagem parte do último mês coberto (migração 0013).
 
 | Marco | Critério | Fonte |
 |---|---|---|

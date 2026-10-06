@@ -2,6 +2,7 @@ import { Monograma } from '@/components/shell/Logo';
 import { Insignia } from './Insignia';
 import { data } from '@/lib/formato';
 import type { Conquista } from '@/lib/tipos';
+import { siteUrl } from '@/lib/ambiente';
 
 const EXTENSO: Record<number, string> = { 3: 'três', 6: 'seis', 12: 'doze', 24: 'vinte e quatro' };
 
@@ -36,7 +37,7 @@ export function Certificado({ nome, c, meses }: { nome: string; c: Conquista; me
             <div className="border-t border-ink-3 pt-2 text-[10px]"><b className="block text-ink">Diretoria</b><span className="text-ink-3">Instituto Social Ebenézer</span></div>
           </div>
           <p className="mt-6 font-sans text-[9.5px] text-ink-3">
-            São Paulo, {data(c.alcancada_em)}&nbsp;&nbsp;·&nbsp;&nbsp;Registro nº {c.numero_registro}&nbsp;&nbsp;·&nbsp;&nbsp;Verificação em ebenezerconecta.org.br/verificar
+            São Paulo, {data(c.alcancada_em)}&nbsp;&nbsp;·&nbsp;&nbsp;Registro nº {c.numero_registro}&nbsp;&nbsp;·&nbsp;&nbsp;Verificação em {siteUrl().replace(/^https?:\/\//, '')}/verificar
           </p>
         </div>
       </div>

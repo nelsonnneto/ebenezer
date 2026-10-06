@@ -11,6 +11,7 @@ import {
 } from '@/lib/dados';
 import { FREQUENCIA, data, inteiro, maiuscula, reais } from '@/lib/formato';
 import type { Recorrencia } from '@/lib/tipos';
+import { siteUrl } from '@/lib/ambiente';
 
 export const metadata: Metadata = { title: 'Home' };
 
@@ -157,7 +158,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ p
             {emb ? (
               <>
                 <Rotulo className="mt-4">Seu link de embaixador</Rotulo>
-                <p className="mt-2 rounded-md border border-border-soft bg-fill-1 px-3 py-3 text-pequeno">ebenezerconecta.org.br/r/{emb.slug}</p>
+                <p className="mt-2 rounded-md border border-border-soft bg-fill-1 px-3 py-3 text-pequeno">{siteUrl().replace(/^https?:\/\//, '')}/r/{emb.slug}</p>
                 <div className="mt-4"><LinkSeta href="/mobilizar">Ir para a Central do Embaixador</LinkSeta></div>
               </>
             ) : (
