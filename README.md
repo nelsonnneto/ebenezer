@@ -6,6 +6,10 @@ O produto converte o doador episódico em recorrente e o mantém: doação em po
 
 **No ar (dados sintéticos):** https://ebenezer-vert.vercel.app · página pública: https://ebenezer-vert.vercel.app/conheca
 
+**Vídeo demonstrativo:** https://drive.google.com/drive/folders/1ZpH-OjzflZQQoep3qdZuXpJ1vN1NFk_3
+
+**Equipe:** Felipe Soffiati, Irineu Massaia e Nelson Souza Neto.
+
 **Protótipo navegável (Figma):** https://www.figma.com/proto/FF5lpXwZLKRE6GdU7qBhcN/?node-id=106-1059&starting-point-node-id=106-1059&scaling=min-zoom
 
 ## Estrutura
