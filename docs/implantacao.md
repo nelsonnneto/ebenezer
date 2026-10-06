@@ -22,6 +22,14 @@ Verificação feita antes da entrega: instalação → limpeza → instalação,
 
 Mudanças futuras de esquema entram como **novas** migrações e são aplicadas uma a uma no SQL Editor (ou com `supabase db push`).
 
+**Migrações aplicadas depois da instalação inicial** (em um projeto já instalado, executar no SQL Editor, na ordem):
+
+| Migração | O que faz |
+|---|---|
+| `20261006001300_mes_corrente_em_aberto.sql` | Corrige a contagem de meses consecutivos no início de cada mês, antes da cobrança. Sem ela, os doadores recorrentes aparecem com 0 meses até o dia da cobrança. |
+
+Uma instalação nova a partir de `dist/ebenezer-supabase-hospedado.sql` já inclui todas as migrações.
+
 ## 2. Imagens
 
 Supabase → **Storage** → bucket `midia` (criado pelo script) → *Upload files* → as seis fotos de `supabase/storage/midia/`, na raiz do bucket e com os mesmos nomes.

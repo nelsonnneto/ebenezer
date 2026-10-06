@@ -18,10 +18,10 @@ supabase/
   seed.sql               dados sintéticos, relativos ao mês corrente
   storage/midia/         as seis fotos ilustrativas
   hospedado/             epílogo (Auth/Storage) e limpeza do projeto hospedado
-  tests/                 pgTAP: esquema, regras, RLS, RPCs, rede, segurança e LGPD (83 asserções)
+  tests/                 pgTAP: esquema, regras, RLS, RPCs, rede, segurança, LGPD e continuidade (85 asserções)
 web/                     front-end Next.js 16 + Tailwind 4, fiel ao protótipo em Figma
   src/app/               telas públicas (conheça, cadastro, acesso, verificar) e do doador
-  e2e/                   Playwright: US-01 a US-05 e página pública (12 testes) + evidências
+  e2e/                   Playwright: US-01 a US-05 e página pública e cadastro (13 testes) + evidências
 dev/supabase-local/      emulador da API do Supabase para ambientes sem Docker (ADR-07)
 scripts/                 db-local.sh (banco de testes) · gerar-sql-hospedado.sh (scripts para o SQL Editor)
 testes/                  planilha de registro dos testes com usuários

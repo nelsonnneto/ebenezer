@@ -36,6 +36,31 @@ test.describe('Acesso', () => {
     await page.getByRole('button', { name: /Enviar link/ }).click();
     await expect(page.getByRole('heading', { name: 'Verifique seu e-mail' })).toBeVisible();
   });
+
+  test('cadastro recusado mantém o que foi digitado e aponta todos os erros (achado A01)', async ({ page }) => {
+    await page.goto('/cadastro');
+    await page.getByLabel('Como quer ser chamado').fill('Marta Lins');
+    await page.getByLabel('E-mail', { exact: true }).fill('marta@exemplo');
+    await page.getByLabel(/^Senha/).fill('curta');
+    await page.getByLabel(/Quero receber o boletim/).check();
+    await page.getByRole('button', { name: /Criar conta/ }).click();
+
+    await expect(page.getByText('Revise os campos indicados. O que você já digitou foi mantido.')).toBeVisible();
+    await expect(page.getByText('Informe um e-mail válido.')).toBeVisible();
+    await expect(page.getByText('A senha precisa ter pelo menos 8 caracteres.')).toBeVisible();
+    await expect(page.getByText('Para criar a conta, confirme que leu a Política de Privacidade.')).toBeVisible();
+    await expect(page.locator('input[name="nome"]')).toHaveValue('Marta Lins');
+    await expect(page.locator('input[name="email"]')).toHaveValue('marta@exemplo');
+    await expect(page.locator('input[name="comunicacao"]')).toBeChecked();
+    await expect(page.locator('input[name="email"]')).toHaveAttribute('aria-invalid', 'true');
+    await evidencia(page, 'a01-cadastro-recusado');
+
+    await page.locator('input[name="email"]').fill('marta@exemplo.com.br');
+    await page.locator('input[name="senha"]').fill('Cadastro2026!');
+    await page.locator('input[name="privacidade"]').check();
+    await page.getByRole('button', { name: /Criar conta/ }).click();
+    await expect(page).toHaveURL(/\/doar\?bemvindo=1/);
+  });
 });
 
 test.describe('US-01 · doador pontual passa a recorrente', () => {

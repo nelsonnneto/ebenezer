@@ -5,6 +5,13 @@ import { vincularOrigemDoCookie } from '@/lib/publico';
 
 export type EstadoForm = { erro?: string; ok?: string } | undefined;
 
+/** Cadastro: devolve os valores digitados (exceto a senha) e um erro por campo, para o formulário não voltar vazio. */
+export type EstadoCadastro = {
+  erro?: string; ok?: string;
+  erros?: Partial<Record<'nome' | 'email' | 'senha' | 'privacidade', string>>;
+  valores?: { nome: string; email: string; comunicacao: boolean; privacidade: boolean };
+} | undefined;
+
 function destinoSeguro(volta: FormDataEntryValue | null) {
   const v = typeof volta === 'string' ? volta : '';
   return v.startsWith('/') && !v.startsWith('//') ? v : '/';
@@ -30,20 +37,26 @@ export async function recuperarSenha(_: EstadoForm, form: FormData): Promise<Est
   redirect(`/recuperar-senha?enviado=${encodeURIComponent(email)}`);
 }
 
-export async function cadastrar(_: EstadoForm, form: FormData): Promise<EstadoForm> {
+export async function cadastrar(_: EstadoCadastro, form: FormData): Promise<EstadoCadastro> {
   const nome = String(form.get('nome') ?? '').trim().replace(/\s+/g, ' ');
   const email = String(form.get('email') ?? '').trim().toLowerCase();
   const senha = String(form.get('senha') ?? '');
   const comunicacao = form.get('comunicacao') === 'on';
-  if (nome.length < 2 || nome.length > 80) return { erro: 'Informe como você quer ser chamado (2 a 80 caracteres).' };
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { erro: 'Informe um e-mail válido.' };
-  if (senha.length < 8) return { erro: 'A senha precisa ter pelo menos 8 caracteres.' };
-  if (form.get('privacidade') !== 'on') return { erro: 'Para criar a conta, confirme que leu a Política de Privacidade.' };
+  const privacidade = form.get('privacidade') === 'on';
+  const valores = { nome, email, comunicacao, privacidade };
+
+  // Valida tudo de uma vez (achado A01 dos testes com usuários): uma única tentativa mostra todos os ajustes.
+  const erros: NonNullable<EstadoCadastro>['erros'] = {};
+  if (nome.length < 2 || nome.length > 80) erros.nome = 'Informe como você quer ser chamado (2 a 80 caracteres).';
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) erros.email = 'Informe um e-mail válido.';
+  if (senha.length < 8) erros.senha = 'A senha precisa ter pelo menos 8 caracteres.';
+  if (!privacidade) erros.privacidade = 'Para criar a conta, confirme que leu a Política de Privacidade.';
+  if (Object.keys(erros).length) return { erros, valores, erro: 'Revise os campos indicados. O que você já digitou foi mantido.' };
 
   const sb = await supabaseServidor();
   const { data, error } = await sb.auth.signUp({ email, password: senha, options: { data: { nome } } });
   if (error) {
-    return { erro: /already|registered|exists/i.test(error.message)
+    return { valores, erro: /already|registered|exists/i.test(error.message)
       ? 'Já existe uma conta com este e-mail. Entre com sua senha ou recupere o acesso.'
       : 'Não foi possível criar a conta agora. Tente de novo em instantes.' };
   }

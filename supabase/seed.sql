@@ -147,6 +147,8 @@ begin
 
     for k in 0 .. p.meses - 1 loop
       v_mes := (date_trunc('month', v_inicio) + (k || ' months')::interval)::date + (p.dia - 1);
+      -- cobrança do mês corrente ainda não vencida: registra hoje, para a demonstração não depender do dia da instalação
+      if v_mes > current_date and v_mes < (v_atual + interval '1 month')::date then v_mes := current_date; end if;
       exit when v_mes > current_date;
       exit when p.cancela_em is not null and v_mes >= (v_atual - (p.cancela_em || ' months')::interval)::date;
       exit when p.pausa_em is not null and v_mes >= (v_atual - (p.pausa_em || ' months')::interval)::date;

@@ -95,4 +95,6 @@ Cada decisão em meia página: contexto, decisão, consequências. Numeradas na 
 
 **Revisões de segurança feitas nesta etapa.** (a) Funções internas deixaram de ser executáveis por `PUBLIC`. Antes, um visitante poderia registrar doação confirmada chamando a função diretamente (migração 0011). (b) Limite de 30 acessos por minuto por link de embaixador (0011). (c) A anonimização passou a remover o dado pessoal também do cadastro de login e pode ser executada pela coordenação no SQL Editor (0012).
 
+**Correções após os testes com usuários (outubro de 2026).** (a) O cadastro passou a manter nome, e-mail e opções marcadas quando é recusado e a mostrar todos os erros de uma vez, junto a cada campo (achado A01). (b) A contagem de meses consecutivos zerava entre o dia 1º e o dia da cobrança do mês, porque começava pelo mês corrente ainda sem doação; o mês corrente passou a ser tratado como em aberto (migração 0013, coberta pelo teste `0007_mes_em_aberto`). O seed deixou de depender do dia em que é instalado.
+
 **Consequências.** Custo zero na demonstração. Os limites do plano gratuito estão em `docs/custos.md`: sem backup diário, pausa por inatividade e, na Vercel, uso não comercial. Para produção com o Instituto, recomenda-se Supabase Pro e Vercel Pro (ou hospedagem equivalente que admita uso institucional), SMTP próprio e domínio `.org.br`.
